@@ -7,6 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { initCouchbase } from "../couchbase";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -28,6 +29,23 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  // Initialize Couchbase connection
+  if (process.env.COUCHBASE_CONNECTION_STRING) {
+    try {
+      await initCouchbase({
+        connectionString: process.env.COUCHBASE_CONNECTION_STRING,
+        username: process.env.COUCHBASE_USERNAME || '',
+        password: process.env.COUCHBASE_PASSWORD || '',
+        bucketName: process.env.COUCHBASE_BUCKET || 'vacation-interview-bot',
+      });
+    } catch (error) {
+      console.error('[Server] Failed to initialize Couchbase:', error);
+      console.log('[Server] Continuing without database connection');
+    }
+  } else {
+    console.warn('[Server] Couchbase connection string not provided');
+  }
+
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
