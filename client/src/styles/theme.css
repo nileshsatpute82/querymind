@@ -1,0 +1,150 @@
+/* QueryMind - Monday.com Inspired Theme */
+
+:root {
+  /* Monday.com inspired color palette */
+  --primary: 0 91% 71%;
+  --primary-hover: 0 91% 65%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 262 83% 58%;
+  --secondary-hover: 262 83% 52%;
+  --secondary-foreground: 0 0% 100%;
+  
+  --accent: 142 76% 36%;
+  --accent-hover: 142 76% 30%;
+  --accent-foreground: 0 0% 100%;
+  
+  --background: 0 0% 98%;
+  --foreground: 222 47% 11%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 0 91% 71%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --info: 199 89% 48%;
+  
+  /* Monday.com spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Monday.com border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  
+  /* Monday.com shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.dark {
+  --primary: 0 91% 71%;
+  --primary-hover: 0 91% 65%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 262 83% 58%;
+  --secondary-hover: 262 83% 52%;
+  --secondary-foreground: 0 0% 100%;
+  
+  --accent: 142 76% 36%;
+  --accent-hover: 142 76% 30%;
+  --accent-foreground: 0 0% 100%;
+  
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  
+  --card: 222 47% 15%;
+  --card-foreground: 210 40% 98%;
+  
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 0 91% 71%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+}
+
+/* Monday.com inspired utility classes */
+.monday-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.monday-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.monday-button-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: var(--radius-md);
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.monday-button-primary:hover {
+  background: hsl(var(--primary-hover));
+  box-shadow: var(--shadow-md);
+}
+
+.monday-gradient-bg {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+}
+
+.monday-section-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: var(--spacing-lg);
+}
+
+.monday-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.monday-badge-success {
+  background: hsl(var(--success) / 0.1);
+  color: hsl(var(--success));
+}
+
+.monday-badge-warning {
+  background: hsl(var(--warning) / 0.1);
+  color: hsl(var(--warning));
+}
+
+.monday-badge-info {
+  background: hsl(var(--info) / 0.1);
+  color: hsl(var(--info));
+}
+

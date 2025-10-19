@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
-import { Loader2, Send, CheckCircle2 } from 'lucide-react';
+import { Loader2, Send, CheckCircle2, Brain, Sparkles } from 'lucide-react';
 
 type InterviewState = 'loading' | 'info' | 'interview' | 'completed' | 'error';
 
@@ -125,10 +125,12 @@ export default function Interview() {
 
   if (state === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md border-2">
           <CardContent className="p-12 text-center">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Brain className="h-8 w-8 text-white" />
+            </div>
             <p className="text-muted-foreground">Loading interview...</p>
           </CardContent>
         </Card>
@@ -138,11 +140,14 @@ export default function Interview() {
 
   if (state === 'error') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Interview Not Found</CardTitle>
-            <CardDescription>
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md border-2">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-4xl">❌</span>
+            </div>
+            <CardTitle className="text-2xl">Interview Not Found</CardTitle>
+            <CardDescription className="text-base">
               This interview link is invalid or no longer active.
             </CardDescription>
           </CardHeader>
@@ -153,18 +158,25 @@ export default function Interview() {
 
   if (state === 'info') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <Card className="w-full max-w-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">{interviewInfo?.title}</CardTitle>
-            <CardDescription>
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-lg border-2">
+          <CardHeader className="text-center pb-4">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
+              <Brain className="h-8 w-8 text-white" />
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mx-auto mb-4">
+              <Sparkles className="h-4 w-4" />
+              <span>Powered by QueryMind</span>
+            </div>
+            <CardTitle className="text-2xl mb-2">{interviewInfo?.title}</CardTitle>
+            <CardDescription className="text-base">
               This interview will ask you approximately {totalQuestions} questions.
-              Your responses will help us understand your preferences better.
+              Your thoughtful responses will help us understand your perspective better.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Your Name (Optional)</Label>
+              <Label htmlFor="name" className="text-base">Your Name (Optional)</Label>
               <Input
                 id="name"
                 placeholder="John Doe"
@@ -172,10 +184,11 @@ export default function Interview() {
                 onChange={(e) =>
                   setIntervieweeInfo({ ...intervieweeInfo, name: e.target.value })
                 }
+                className="h-11"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Your Email (Optional)</Label>
+              <Label htmlFor="email" className="text-base">Your Email (Optional)</Label>
               <Input
                 id="email"
                 type="email"
@@ -184,20 +197,24 @@ export default function Interview() {
                 onChange={(e) =>
                   setIntervieweeInfo({ ...intervieweeInfo, email: e.target.value })
                 }
+                className="h-11"
               />
             </div>
             <Button
-              className="w-full"
+              className="w-full h-12 text-base bg-gradient-to-r from-primary to-secondary hover:opacity-90"
               onClick={handleStart}
               disabled={startSession.isPending}
             >
               {startSession.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Starting...
                 </>
               ) : (
-                'Start Interview'
+                <>
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Start Interview
+                </>
               )}
             </Button>
           </CardContent>
@@ -208,30 +225,35 @@ export default function Interview() {
 
   if (state === 'completed') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <Card className="w-full max-w-2xl">
-          <CardHeader className="text-center">
-            <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <CardTitle className="text-2xl">Interview Complete!</CardTitle>
-            <CardDescription>
-              Thank you for taking the time to complete this interview.
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-2xl border-2">
+          <CardHeader className="text-center pb-6">
+            <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="h-12 w-12 text-accent" />
+            </div>
+            <CardTitle className="text-3xl mb-2">Interview Complete!</CardTitle>
+            <CardDescription className="text-base">
+              Thank you for taking the time to complete this interview. Your insights are valuable to us.
             </CardDescription>
           </CardHeader>
           {summaryData?.summary && (
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2">Summary</h3>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+            <CardContent className="space-y-6">
+              <div className="p-6 rounded-lg bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 border-2">
+                <h3 className="font-semibold text-lg mb-3">Summary</h3>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
                   {summaryData.summary.summary}
                 </p>
               </div>
               {summaryData.summary.keyInsights.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mb-2">Key Points</h3>
-                  <ul className="list-disc list-inside space-y-1">
+                <div className="p-6 rounded-lg bg-muted/50 border-2">
+                  <h3 className="font-semibold text-lg mb-3">Key Points</h3>
+                  <ul className="space-y-2">
                     {summaryData.summary.keyInsights.map((insight, index) => (
-                      <li key={index} className="text-sm text-muted-foreground">
-                        {insight}
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-primary mt-1">•</span>
+                        <span className="text-sm text-muted-foreground flex-1">
+                          {insight}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -245,58 +267,76 @@ export default function Interview() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="container max-w-3xl mx-auto py-8 space-y-6">
         {/* Progress */}
-        <Card>
+        <Card className="border-2">
           <CardContent className="pt-6">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">
-                  Question {questionNumber} of {totalQuestions}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <Brain className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="font-semibold">
+                    Question {questionNumber} of {totalQuestions}
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-muted-foreground">
+                  {Math.round(progress)}% Complete
                 </span>
-                <span className="text-muted-foreground">{Math.round(progress)}%</span>
               </div>
-              <Progress value={progress} />
+              <Progress value={progress} className="h-2" />
             </div>
           </CardContent>
         </Card>
 
         {/* Question */}
-        <Card>
+        <Card className="border-2">
           <CardHeader>
-            <CardTitle className="text-xl">Question {questionNumber}</CardTitle>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
+                {questionNumber}
+              </div>
+              <CardTitle className="text-xl">Question {questionNumber}</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent>
-            <p className="text-lg mb-6">{currentQuestion}</p>
+          <CardContent className="space-y-6">
+            <div className="p-4 rounded-lg bg-muted/50 border-2">
+              <p className="text-lg leading-relaxed">{currentQuestion}</p>
+            </div>
             <div className="space-y-4">
+              <Label htmlFor="answer" className="text-base">Your Answer</Label>
               <Textarea
+                id="answer"
                 placeholder="Type your answer here..."
                 rows={6}
                 value={currentAnswer}
                 onChange={(e) => setCurrentAnswer(e.target.value)}
                 disabled={submitAnswer.isPending}
+                className="resize-none text-base"
               />
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <Button
-                  className="flex-1"
+                  className="flex-1 h-12 text-base bg-gradient-to-r from-primary to-secondary hover:opacity-90"
                   onClick={handleSubmitAnswer}
                   disabled={submitAnswer.isPending || !currentAnswer.trim()}
                 >
                   {submitAnswer.isPending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       Submitting...
                     </>
                   ) : (
                     <>
-                      <Send className="mr-2 h-4 w-4" />
+                      <Send className="mr-2 h-5 w-5" />
                       Submit Answer
                     </>
                   )}
                 </Button>
                 <Button
                   variant="outline"
+                  className="h-12 border-2"
                   onClick={handleCompleteEarly}
                   disabled={completeEarly.isPending || submitAnswer.isPending}
                 >
@@ -308,11 +348,11 @@ export default function Interview() {
         </Card>
 
         {/* Info */}
-        <Card className="bg-muted/50">
+        <Card className="bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 border-2">
           <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground text-center">
-              Take your time to provide thoughtful answers. You can complete the
-              interview early if you feel you've shared everything.
+            <p className="text-sm text-center text-muted-foreground leading-relaxed">
+              💡 Take your time to provide thoughtful answers. The AI will adapt follow-up questions 
+              based on your responses. You can complete the interview early if you feel you've shared everything.
             </p>
           </CardContent>
         </Card>

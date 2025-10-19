@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Clock, CheckCircle, PlayCircle } from 'lucide-react';
 
 export default function InterviewDetails() {
   const [, params] = useRoute('/admin/interview/:id');
@@ -26,7 +26,7 @@ export default function InterviewDetails() {
     refetch: refetchInterview,
   } = trpc.admin.getInterviewDetails.useQuery(
     { interviewId },
-    { enabled: !!interviewId, refetchInterval: 5000 } // Auto-refresh every 5 seconds
+    { enabled: !!interviewId, refetchInterval: 5000 }
   );
 
   const {
@@ -34,10 +34,9 @@ export default function InterviewDetails() {
     refetch: refetchSession,
   } = trpc.admin.getSessionMessages.useQuery(
     { sessionId: selectedSessionId || '' },
-    { enabled: !!selectedSessionId, refetchInterval: 3000 } // Auto-refresh every 3 seconds
+    { enabled: !!selectedSessionId, refetchInterval: 3000 }
   );
 
-  // Auto-select first session if none selected
   useEffect(() => {
     if (
       !selectedSessionId &&
@@ -52,7 +51,9 @@ export default function InterviewDetails() {
     return (
       <DashboardLayout>
         <div className="container mx-auto p-6">
-          <p>Loading...</p>
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -60,21 +61,44 @@ export default function InterviewDetails() {
 
   const { interview, sessions } = interviewData;
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-accent" />;
+      case 'in_progress':
+        return <PlayCircle className="h-4 w-4 text-primary" />;
+      default:
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <Badge className="bg-accent">Completed</Badge>;
+      case 'in_progress':
+        return <Badge className="bg-primary">In Progress</Badge>;
+      default:
+        return <Badge variant="outline">Abandoned</Badge>;
+    }
+  };
+
   return (
     <DashboardLayout>
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="container mx-auto p-6 space-y-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => navigate('/admin')}
+              className="rounded-full"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-5 w-5" />
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold">{interview.title}</h1>
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold tracking-tight">{interview.title}</h1>
               <p className="text-muted-foreground">{interview.prompt}</p>
             </div>
           </div>
@@ -87,6 +111,7 @@ export default function InterviewDetails() {
                 refetchSession();
               }
             }}
+            className="border-2"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
@@ -96,51 +121,49 @@ export default function InterviewDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sessions List */}
           <div className="lg:col-span-1 space-y-4">
-            <Card>
+            <Card className="border-2">
               <CardHeader>
-                <CardTitle>Interview Sessions</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Interview Sessions</CardTitle>
+                  <Badge variant="secondary" className="text-sm">
+                    {sessions.length}
+                  </Badge>
+                </div>
                 <CardDescription>
                   {sessions.length} response{sessions.length !== 1 ? 's' : ''}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-2 max-h-[calc(100vh-300px)] overflow-y-auto">
                 {sessions.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    No responses yet. Share the interview link to get started.
-                  </p>
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">
+                      No responses yet. Share the interview link to get started.
+                    </p>
+                  </div>
                 )}
                 {sessions.map((session) => (
                   <Card
                     key={session.id}
-                    className={`cursor-pointer transition-colors ${
+                    className={`cursor-pointer transition-all border-2 ${
                       selectedSessionId === session.id
-                        ? 'border-primary bg-primary/5'
-                        : 'hover:bg-muted/50'
+                        ? 'border-primary bg-primary/5 shadow-md'
+                        : 'hover:bg-muted/50 hover:border-muted-foreground/20'
                     }`}
                     onClick={() => setSelectedSessionId(session.id)}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-sm">
+                        <span className="font-semibold text-sm">
                           {session.intervieweeInfo?.name || 'Anonymous'}
                         </span>
-                        <Badge
-                          variant={
-                            session.status === 'completed'
-                              ? 'default'
-                              : session.status === 'in_progress'
-                              ? 'secondary'
-                              : 'outline'
-                          }
-                        >
-                          {session.status}
-                        </Badge>
+                        {getStatusIcon(session.status)}
                       </div>
-                      <p className="text-xs text-muted-foreground">
+                      {getStatusBadge(session.status)}
+                      <p className="text-xs text-muted-foreground mt-2">
                         {new Date(session.startedAt).toLocaleString()}
                       </p>
                       {session.intervieweeInfo?.email && (
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground truncate">
                           {session.intervieweeInfo.email}
                         </p>
                       )}
@@ -156,16 +179,31 @@ export default function InterviewDetails() {
             {selectedSessionId && sessionData ? (
               <>
                 {/* Conversation */}
-                <Card>
+                <Card className="border-2">
                   <CardHeader>
-                    <CardTitle>Conversation</CardTitle>
-                    <CardDescription>
-                      Question {sessionData.session.currentQuestionNumber} of{' '}
-                      {interview.questionLimit}
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle>Conversation</CardTitle>
+                        <CardDescription>
+                          Question {sessionData.session.currentQuestionNumber} of{' '}
+                          {interview.questionLimit}
+                        </CardDescription>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium">
+                          {Math.round((sessionData.session.currentQuestionNumber / interview.questionLimit) * 100)}% Complete
+                        </div>
+                        <div className="w-32 h-2 bg-muted rounded-full mt-1 overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-primary to-secondary transition-all"
+                            style={{ width: `${(sessionData.session.currentQuestionNumber / interview.questionLimit) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    {sessionData.messages.map((message, index) => (
+                  <CardContent className="space-y-4 max-h-[calc(100vh-400px)] overflow-y-auto">
+                    {sessionData.messages.map((message) => (
                       <div
                         key={message.id}
                         className={`flex ${
@@ -173,15 +211,15 @@ export default function InterviewDetails() {
                         }`}
                       >
                         <div
-                          className={`max-w-[80%] rounded-lg p-4 ${
+                          className={`max-w-[85%] rounded-2xl p-4 ${
                             message.role === 'bot'
-                              ? 'bg-muted'
-                              : 'bg-primary text-primary-foreground'
+                              ? 'bg-muted border-2 border-border'
+                              : 'bg-gradient-to-r from-primary to-secondary text-white'
                           }`}
                         >
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-medium">
-                              {message.role === 'bot' ? '🤖 Bot' : '👤 User'}
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-semibold">
+                              {message.role === 'bot' ? '🤖 QueryMind' : '👤 User'}
                             </span>
                             {message.questionNumber && (
                               <Badge variant="outline" className="text-xs">
@@ -189,33 +227,38 @@ export default function InterviewDetails() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm whitespace-pre-wrap">
+                          <p className="text-sm whitespace-pre-wrap leading-relaxed">
                             {message.content}
                           </p>
-                          <p className="text-xs opacity-70 mt-2">
+                          <p className={`text-xs mt-2 ${message.role === 'bot' ? 'text-muted-foreground' : 'text-white/70'}`}>
                             {new Date(message.timestamp).toLocaleTimeString()}
                           </p>
                         </div>
                       </div>
                     ))}
                     {sessionData.messages.length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center py-8">
-                        No messages yet
-                      </p>
+                      <div className="text-center py-12">
+                        <p className="text-sm text-muted-foreground">
+                          No messages yet
+                        </p>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
 
                 {/* Summary */}
                 {sessionData.summary && (
-                  <Card>
+                  <Card className="border-2 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
                     <CardHeader>
-                      <CardTitle>Interview Summary</CardTitle>
+                      <CardTitle className="flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-accent" />
+                        Interview Summary
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-6">
                       <div>
-                        <h4 className="font-medium mb-2">Summary</h4>
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        <h4 className="font-semibold text-base mb-3">Summary</h4>
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
                           {sessionData.summary.summary}
                         </p>
                       </div>
@@ -223,11 +266,14 @@ export default function InterviewDetails() {
                       <Separator />
 
                       <div>
-                        <h4 className="font-medium mb-2">Key Insights</h4>
-                        <ul className="list-disc list-inside space-y-1">
+                        <h4 className="font-semibold text-base mb-3">Key Insights</h4>
+                        <ul className="space-y-2">
                           {sessionData.summary.keyInsights.map((insight, index) => (
-                            <li key={index} className="text-sm text-muted-foreground">
-                              {insight}
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="text-primary mt-1">•</span>
+                              <span className="text-sm text-muted-foreground flex-1">
+                                {insight}
+                              </span>
                             </li>
                           ))}
                         </ul>
@@ -238,8 +284,8 @@ export default function InterviewDetails() {
                           <>
                             <Separator />
                             <div>
-                              <h4 className="font-medium mb-2">Structured Data</h4>
-                              <pre className="text-xs bg-muted p-4 rounded-lg overflow-auto">
+                              <h4 className="font-semibold text-base mb-3">Structured Data</h4>
+                              <pre className="text-xs bg-muted/50 p-4 rounded-lg overflow-auto border-2">
                                 {JSON.stringify(
                                   sessionData.summary.structuredData,
                                   null,
@@ -254,8 +300,11 @@ export default function InterviewDetails() {
                 )}
               </>
             ) : (
-              <Card>
-                <CardContent className="p-12 text-center">
+              <Card className="border-2 border-dashed">
+                <CardContent className="p-16 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                    <PlayCircle className="h-8 w-8 text-muted-foreground" />
+                  </div>
                   <p className="text-muted-foreground">
                     Select a session to view details
                   </p>

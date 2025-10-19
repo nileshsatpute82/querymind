@@ -44,10 +44,22 @@ export const adminRouter = router({
 
   // Get config
   getConfig: protectedProcedure.query(async ({ ctx }) => {
-    const config = await getConfig(ctx.user.id);
-    return {
-      hasApiKey: !!config?.openaiApiKey,
-    };
+    try {
+      const config = await getConfig(ctx.user.id);
+      return {
+        hasApiKey: !!config?.openaiApiKey,
+        couchbaseConnected: true,
+      };
+    } catch (error: any) {
+      if (error.message?.includes('Couchbase not initialized')) {
+        return {
+          hasApiKey: false,
+          couchbaseConnected: false,
+          error: 'Couchbase database not configured. Please set up environment variables.',
+        };
+      }
+      throw error;
+    }
   }),
 
   // Create new interview

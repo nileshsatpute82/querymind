@@ -28,8 +28,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Settings, Plus, ExternalLink, Users, MessageSquare } from 'lucide-react';
+import { Settings, Plus, ExternalLink, Users, MessageSquare, Brain, Sparkles, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function AdminDashboard() {
   const [, navigate] = useLocation();
@@ -91,28 +93,41 @@ export default function AdminDashboard() {
     toast.success('Link copied to clipboard');
   };
 
+  const showCouchbaseError = config && 'error' in config && !!config.error;
+
   return (
     <DashboardLayout>
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="container mx-auto p-6 space-y-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Interview Bot Dashboard</h1>
-            <p className="text-muted-foreground">
-              Create and manage AI-powered interviews
-            </p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary">
+                <Brain className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">QueryMind Dashboard</h1>
+                <p className="text-muted-foreground">
+                  Create and manage AI-powered interviews
+                </p>
+              </div>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button
               variant="outline"
+              size="lg"
               onClick={() => setShowConfigDialog(true)}
+              className="border-2"
             >
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </Button>
             <Button
+              size="lg"
               onClick={() => setShowCreateDialog(true)}
-              disabled={!config?.hasApiKey}
+              disabled={!config?.hasApiKey || showCouchbaseError}
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
             >
               <Plus className="mr-2 h-4 w-4" />
               Create Interview
@@ -120,107 +135,152 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* API Key Warning */}
-        {!config?.hasApiKey && (
-          <Card className="border-yellow-500 bg-yellow-50 dark:bg-yellow-950">
-            <CardHeader>
-              <CardTitle>OpenAI API Key Required</CardTitle>
-              <CardDescription>
-                Please configure your OpenAI API key to start creating interviews.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={() => setShowConfigDialog(true)}>
-                Configure API Key
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Couchbase Error */}
+        {showCouchbaseError && (
+          <Alert variant="destructive" className="border-2">
+            <AlertCircle className="h-5 w-5" />
+            <AlertTitle className="text-lg font-semibold">Database Not Connected</AlertTitle>
+            <AlertDescription className="text-base">
+              {config.error} Please configure your Couchbase credentials in the environment variables.
+            </AlertDescription>
+          </Alert>
         )}
 
-        {/* Interviews List */}
-        <div className="grid gap-4">
-          {interviews?.map((interview) => (
-            <Card key={interview.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle>{interview.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">
-                      {interview.prompt}
-                    </CardDescription>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate(`/admin/interview/${interview.id}`)}
-                  >
-                    <Users className="mr-2 h-4 w-4" />
-                    View Responses
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>
-                      <MessageSquare className="inline mr-1 h-4 w-4" />
-                      {interview.questionLimit} questions
-                    </span>
-                    <span>
-                      Status: {interview.status === 'active' ? '🟢 Active' : '⚫ Archived'}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyShareableLink(`/interview/${interview.shareableLink}`)}
-                  >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Copy Link
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        {/* API Key Warning */}
+        {!config?.hasApiKey && !showCouchbaseError && (
+          <Alert className="border-2 border-primary/50 bg-primary/5">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <AlertTitle className="text-lg font-semibold">OpenAI API Key Required</AlertTitle>
+            <AlertDescription className="text-base">
+              Configure your OpenAI API key to start creating intelligent interviews.
+              <Button 
+                onClick={() => setShowConfigDialog(true)} 
+                className="mt-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+              >
+                Configure API Key
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
 
-          {interviews?.length === 0 && config?.hasApiKey && (
-            <Card>
-              <CardHeader>
-                <CardTitle>No interviews yet</CardTitle>
-                <CardDescription>
-                  Create your first interview to get started.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          )}
+        {/* Interviews Grid */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Your Interviews</h2>
+            {interviews && interviews.length > 0 && (
+              <Badge variant="secondary" className="text-sm px-3 py-1">
+                {interviews.length} {interviews.length === 1 ? 'interview' : 'interviews'}
+              </Badge>
+            )}
+          </div>
+
+          <div className="grid gap-4">
+            {interviews?.map((interview) => (
+              <Card key={interview.id} className="border-2 hover:shadow-lg transition-all group">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                          {interview.title}
+                        </CardTitle>
+                        <Badge 
+                          variant={interview.status === 'active' ? 'default' : 'secondary'}
+                          className={interview.status === 'active' ? 'bg-accent' : ''}
+                        >
+                          {interview.status === 'active' ? '🟢 Active' : '⚫ Archived'}
+                        </Badge>
+                      </div>
+                      <CardDescription className="text-base line-clamp-2">
+                        {interview.prompt}
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/admin/interview/${interview.id}`)}
+                      className="ml-4 border-2"
+                    >
+                      <Users className="mr-2 h-4 w-4" />
+                      View Responses
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        <span className="font-medium">{interview.questionLimit} questions</span>
+                      </div>
+                      <div className="text-xs">
+                        Created {new Date(interview.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyShareableLink(`/interview/${interview.shareableLink}`)}
+                      className="hover:bg-primary/10 hover:text-primary"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Copy Link
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {interviews?.length === 0 && config?.hasApiKey && !showCouchbaseError && (
+              <Card className="border-2 border-dashed">
+                <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <MessageSquare className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <CardTitle className="text-xl mb-2">No interviews yet</CardTitle>
+                  <CardDescription className="text-base mb-4">
+                    Create your first interview to get started with QueryMind
+                  </CardDescription>
+                  <Button 
+                    onClick={() => setShowCreateDialog(true)}
+                    className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Your First Interview
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
 
         {/* Config Dialog */}
         <Dialog open={showConfigDialog} onOpenChange={setShowConfigDialog}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>OpenAI Configuration</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-2xl">OpenAI Configuration</DialogTitle>
+              <DialogDescription className="text-base">
                 Enter your OpenAI API key to enable AI-powered interviews.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="apiKey">OpenAI API Key</Label>
+                <Label htmlFor="apiKey" className="text-base">OpenAI API Key</Label>
                 <Input
                   id="apiKey"
                   type="password"
                   placeholder="sk-..."
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
+                  className="h-11"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Get your API key from{' '}
                   <a
                     href="https://platform.openai.com/api-keys"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline"
+                    className="underline text-primary hover:text-primary/80"
                   >
                     platform.openai.com
                   </a>
@@ -234,8 +294,12 @@ export default function AdminDashboard() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleSaveConfig} disabled={saveConfig.isPending}>
-                {saveConfig.isPending ? 'Saving...' : 'Save'}
+              <Button 
+                onClick={handleSaveConfig} 
+                disabled={saveConfig.isPending}
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+              >
+                {saveConfig.isPending ? 'Saving...' : 'Save Configuration'}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -245,41 +309,42 @@ export default function AdminDashboard() {
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Create New Interview</DialogTitle>
-              <DialogDescription>
-                Define the interview topic and let AI generate dynamic questions.
+              <DialogTitle className="text-2xl">Create New Interview</DialogTitle>
+              <DialogDescription className="text-base">
+                Define your interview topic and let AI generate dynamic questions.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Interview Title</Label>
+                <Label htmlFor="title" className="text-base">Interview Title</Label>
                 <Input
                   id="title"
-                  placeholder="e.g., Vacation Planning Interview"
+                  placeholder="e.g., Customer Feedback Survey"
                   value={newInterview.title}
                   onChange={(e) =>
                     setNewInterview({ ...newInterview, title: e.target.value })
                   }
+                  className="h-11"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="prompt">Interview Prompt</Label>
+                <Label htmlFor="prompt" className="text-base">Interview Prompt</Label>
                 <Textarea
                   id="prompt"
-                  placeholder="e.g., Interview a person for 15 minutes about their next vacation plan. Understand where they want to go, what kind of food they like, what activities they enjoy, their budget, and travel preferences."
+                  placeholder="e.g., Interview customers about their experience with our product. Ask about what features they use most, what problems they face, and what improvements they'd like to see."
                   rows={5}
                   value={newInterview.prompt}
                   onChange={(e) =>
                     setNewInterview({ ...newInterview, prompt: e.target.value })
                   }
+                  className="resize-none"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Describe what you want to learn from the interview. The AI will
-                  generate questions based on this prompt.
+                <p className="text-sm text-muted-foreground">
+                  Describe what you want to learn. The AI will generate contextual questions based on this prompt.
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="questionLimit">Number of Questions</Label>
+                <Label htmlFor="questionLimit" className="text-base">Number of Questions</Label>
                 <Select
                   value={newInterview.questionLimit.toString()}
                   onValueChange={(value) =>
@@ -289,7 +354,7 @@ export default function AdminDashboard() {
                     })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-11">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -311,6 +376,7 @@ export default function AdminDashboard() {
               <Button
                 onClick={handleCreateInterview}
                 disabled={createInterview.isPending}
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
               >
                 {createInterview.isPending ? 'Creating...' : 'Create Interview'}
               </Button>

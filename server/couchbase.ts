@@ -116,7 +116,7 @@ async function createIndexes(): Promise<void> {
  */
 export function getCollection(): couchbase.Collection {
   if (!collection) {
-    throw new Error('Couchbase not initialized. Call initCouchbase() first.');
+    throw new Error('Couchbase not initialized. Please configure COUCHBASE_CONNECTION_STRING, COUCHBASE_USERNAME, COUCHBASE_PASSWORD, and COUCHBASE_BUCKET environment variables.');
   }
   return collection;
 }
@@ -126,7 +126,7 @@ export function getCollection(): couchbase.Collection {
  */
 export function getCluster(): couchbase.Cluster {
   if (!cluster) {
-    throw new Error('Couchbase not initialized. Call initCouchbase() first.');
+    throw new Error('Couchbase not initialized. Please configure COUCHBASE_CONNECTION_STRING, COUCHBASE_USERNAME, COUCHBASE_PASSWORD, and COUCHBASE_BUCKET environment variables.');
   }
   return cluster;
 }
