@@ -1,23 +1,11 @@
-import { useAuth } from '@/_core/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { APP_LOGO, APP_TITLE, getLoginUrl } from '@/const';
+import { APP_LOGO, APP_TITLE } from '@/const';
 import { useLocation } from 'wouter';
 import { Brain, Sparkles, BarChart3, Zap, Users, TrendingUp } from 'lucide-react';
 
 export default function Home() {
-  const { user, loading, isAuthenticated, logout } = useAuth();
   const [, navigate] = useLocation();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse">
-          <Brain className="h-12 w-12 text-primary" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,30 +26,12 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {isAuthenticated ? (
-              <>
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted">
-                  <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                  <span className="text-sm font-medium">{user?.name || user?.email}</span>
-                </div>
-                <Button 
-                  onClick={() => navigate('/admin')}
-                  className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                >
-                  Dashboard
-                </Button>
-                <Button variant="ghost" onClick={logout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <Button 
-                onClick={() => (window.location.href = getLoginUrl())}
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-              >
-                Get Started
-              </Button>
-            )}
+            <Button 
+              onClick={() => navigate('/admin')}
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+            >
+              Go to Dashboard
+            </Button>
           </div>
         </div>
       </header>
@@ -87,25 +57,14 @@ export default function Home() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            {isAuthenticated ? (
-              <Button 
-                size="lg" 
-                onClick={() => navigate('/admin')}
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg h-14 px-8"
-              >
-                <Brain className="mr-2 h-5 w-5" />
-                Go to Dashboard
-              </Button>
-            ) : (
-              <Button
-                size="lg"
-                onClick={() => (window.location.href = getLoginUrl())}
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg h-14 px-8"
-              >
-                <Zap className="mr-2 h-5 w-5" />
-                Start Free Trial
-              </Button>
-            )}
+            <Button 
+              size="lg" 
+              onClick={() => navigate('/admin')}
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg h-14 px-8"
+            >
+              <Brain className="mr-2 h-5 w-5" />
+              Go to Dashboard
+            </Button>
             <Button 
               size="lg" 
               variant="outline"
@@ -249,16 +208,14 @@ export default function Home() {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Join teams using QueryMind to conduct smarter, faster, and more insightful interviews.
               </p>
-              {!isAuthenticated && (
-                <Button
-                  size="lg"
-                  onClick={() => (window.location.href = getLoginUrl())}
-                  className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg h-14 px-8"
-                >
-                  <Zap className="mr-2 h-5 w-5" />
-                  Get Started Free
-                </Button>
-              )}
+              <Button
+                size="lg"
+                onClick={() => navigate('/admin')}
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg h-14 px-8"
+              >
+                <Zap className="mr-2 h-5 w-5" />
+                Get Started
+              </Button>
             </CardContent>
           </Card>
         </div>

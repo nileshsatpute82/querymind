@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-import { protectedProcedure, publicProcedure, router } from './_core/trpc';
+import { publicProcedure, router } from './_core/trpc';
 import {
   createInterview,
   getInterview,
@@ -25,17 +25,17 @@ import { TRPCError } from '@trpc/server';
  */
 export const adminRouter = router({
   // Save OpenAI API key
-  saveConfig: protectedProcedure
+  saveConfig: publicProcedure
     .input(
       z.object({
         openaiApiKey: z.string().min(1),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       const config = await upsertConfig({
         type: 'config',
         id: uuidv4(),
-        userId: ctx.user.id,
+        userId: 'admin',
         openaiApiKey: input.openaiApiKey,
       });
 
@@ -43,9 +43,9 @@ export const adminRouter = router({
     }),
 
   // Get config
-  getConfig: protectedProcedure.query(async ({ ctx }) => {
+  getConfig: publicProcedure.query(async () => {
     try {
-      const config = await getConfig(ctx.user.id);
+      const config = await getConfig('admin');
       return {
         hasApiKey: !!config?.openaiApiKey,
         couchbaseConnected: true,
@@ -63,7 +63,7 @@ export const adminRouter = router({
   }),
 
   // Create new interview
-  createInterview: protectedProcedure
+  createInterview: publicProcedure
     .input(
       z.object({
         title: z.string().min(1),
@@ -71,8 +71,8 @@ export const adminRouter = router({
         questionLimit: z.number().min(1).max(50).default(10),
       })
     )
-    .mutation(async ({ ctx, input }) => {
-      const config = await getConfig(ctx.user.id);
+    .mutation(async ({ input }) => {
+      const config = await getConfig('admin');
       
       if (!config?.openaiApiKey) {
         throw new TRPCError({
@@ -90,7 +90,7 @@ export const adminRouter = router({
         title: input.title,
         prompt: input.prompt,
         questionLimit: input.questionLimit,
-        createdBy: ctx.user.id,
+        createdBy: 'admin',
         status: 'active',
         shareableLink,
       });
@@ -102,18 +102,18 @@ export const adminRouter = router({
     }),
 
   // List all interviews
-  listInterviews: protectedProcedure.query(async ({ ctx }) => {
-    const interviews = await listInterviews(ctx.user.id);
+  listInterviews: publicProcedure.query(async () => {
+    const interviews = await listInterviews('admin');
     return interviews;
   }),
 
   // Get interview details with sessions
-  getInterviewDetails: protectedProcedure
+  getInterviewDetails: publicProcedure
     .input(z.object({ interviewId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const interview = await getInterview(input.interviewId);
       
-      if (!interview || interview.createdBy !== ctx.user.id) {
+      if (!interview || interview.createdBy !== 'admin') {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Interview not found',
@@ -129,9 +129,9 @@ export const adminRouter = router({
     }),
 
   // Get session messages (for real-time viewing)
-  getSessionMessages: protectedProcedure
+  getSessionMessages: publicProcedure
     .input(z.object({ sessionId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const session = await getSession(input.sessionId);
       
       if (!session) {
@@ -143,7 +143,7 @@ export const adminRouter = router({
 
       const interview = await getInterview(session.interviewId);
       
-      if (!interview || interview.createdBy !== ctx.user.id) {
+      if (!interview || interview.createdBy !== 'admin') {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Access denied',
