@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide will walk you through deploying the Vacation Interview Bot to Render.com with Couchbase as the database.
+This guide will walk you through deploying QueryMind to Render.com with Couchbase as the database.
 
 ## Quick Checklist
 
