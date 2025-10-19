@@ -140,7 +140,7 @@ export async function getInterview(interviewId: string): Promise<InterviewDocume
 
 export async function getInterviewByLink(shareableLink: string): Promise<InterviewDocument | null> {
   const cluster = getCluster();
-  const bucketName = process.env.COUCHBASE_BUCKET || 'vacation-interview-bot';
+  const bucketName = process.env.COUCHBASE_BUCKET || 'interview-GPT';
   
   try {
     const query = `
@@ -166,7 +166,7 @@ export async function getInterviewByLink(shareableLink: string): Promise<Intervi
 
 export async function listInterviews(userId: string): Promise<InterviewDocument[]> {
   const cluster = getCluster();
-  const bucketName = process.env.COUCHBASE_BUCKET || 'vacation-interview-bot';
+  const bucketName = process.env.COUCHBASE_BUCKET || 'interview-GPT';
   
   try {
     const query = `
@@ -238,7 +238,7 @@ export async function updateSession(sessionId: string, updates: Partial<SessionD
 
 export async function listSessions(interviewId: string): Promise<SessionDocument[]> {
   const cluster = getCluster();
-  const bucketName = process.env.COUCHBASE_BUCKET || 'vacation-interview-bot';
+  const bucketName = process.env.COUCHBASE_BUCKET || 'interview-GPT';
   
   try {
     const query = `
@@ -275,7 +275,7 @@ export async function createMessage(message: InsertMessage): Promise<MessageDocu
 
 export async function listMessages(sessionId: string): Promise<MessageDocument[]> {
   const cluster = getCluster();
-  const bucketName = process.env.COUCHBASE_BUCKET || 'vacation-interview-bot';
+  const bucketName = process.env.COUCHBASE_BUCKET || 'interview-GPT';
   
   try {
     const query = `
@@ -312,7 +312,7 @@ export async function createSummary(summary: InsertSummary): Promise<SummaryDocu
 
 export async function getSummary(sessionId: string): Promise<SummaryDocument | null> {
   const cluster = getCluster();
-  const bucketName = process.env.COUCHBASE_BUCKET || 'vacation-interview-bot';
+  const bucketName = process.env.COUCHBASE_BUCKET || 'interview-GPT';
   
   try {
     const query = `

@@ -36,7 +36,7 @@ async function startServer() {
         connectionString: process.env.COUCHBASE_CONNECTION_STRING,
         username: process.env.COUCHBASE_USERNAME || '',
         password: process.env.COUCHBASE_PASSWORD || '',
-        bucketName: process.env.COUCHBASE_BUCKET || 'vacation-interview-bot',
+        bucketName: process.env.COUCHBASE_BUCKET || 'interview-GPT',
       });
     } catch (error) {
       console.error('[Server] Failed to initialize Couchbase:', error);

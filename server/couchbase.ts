@@ -67,7 +67,7 @@ async function createIndexes(): Promise<void> {
 
     // Create primary index if it doesn't exist
     try {
-      await queryIndexManager.createPrimaryIndex(process.env.COUCHBASE_BUCKET || 'vacation-interview-bot', {
+      await queryIndexManager.createPrimaryIndex(process.env.COUCHBASE_BUCKET || 'interview-GPT', {
         ignoreIfExists: true,
       });
       console.log('[Couchbase] Primary index created/verified');
@@ -80,7 +80,7 @@ async function createIndexes(): Promise<void> {
     // Create index for interview queries
     try {
       await queryIndexManager.createIndex(
-        process.env.COUCHBASE_BUCKET || 'vacation-interview-bot',
+        process.env.COUCHBASE_BUCKET || 'interview-GPT',
         'idx_type_createdBy',
         ['type', 'createdBy', 'createdAt'],
         { ignoreIfExists: true }
@@ -95,7 +95,7 @@ async function createIndexes(): Promise<void> {
     // Create index for session queries
     try {
       await queryIndexManager.createIndex(
-        process.env.COUCHBASE_BUCKET || 'vacation-interview-bot',
+        process.env.COUCHBASE_BUCKET || 'interview-GPT',
         'idx_type_interviewId',
         ['type', 'interviewId', 'createdAt'],
         { ignoreIfExists: true }

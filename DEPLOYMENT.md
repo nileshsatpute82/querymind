@@ -7,7 +7,7 @@ This guide will walk you through deploying QueryMind to Render.com with Couchbas
 Before deploying, make sure you have:
 
 - [ ] Couchbase Cloud cluster created
-- [ ] Couchbase bucket created (`vacation-interview-bot`)
+- [ ] Couchbase bucket created (`interview-GPT`)
 - [ ] Couchbase credentials (username, password, connection string)
 - [ ] OpenAI API key (you'll configure this after deployment)
 - [ ] GitHub repository created
@@ -34,7 +34,7 @@ Before deploying, make sure you have:
 3. **Create a Bucket**
    - Once cluster is ready, go to "Data Tools" → "Buckets"
    - Click "Create Bucket"
-   - Name: `vacation-interview-bot`
+   - Name: `interview-GPT`
    - Memory Quota: Use default (100 MB is fine for free tier)
    - Click "Create"
 
@@ -59,7 +59,7 @@ Before deploying, make sure you have:
    ```bash
    # On GitHub.com
    # Click "New repository"
-   # Name: vacation-interview-bot
+   # Name: interview-GPT
    # Choose Private or Public
    # Don't initialize with README (we already have one)
    # Click "Create repository"
@@ -67,7 +67,7 @@ Before deploying, make sure you have:
 
 2. **Push Code to GitHub**
    ```bash
-   cd /path/to/vacation-interview-bot
+   cd /path/to/interview-GPT
    
    # If not already initialized
    git init
@@ -75,7 +75,7 @@ Before deploying, make sure you have:
    git commit -m "Initial commit"
    
    # Add remote and push
-   git remote add origin https://github.com/YOUR_USERNAME/vacation-interview-bot.git
+   git remote add origin https://github.com/YOUR_USERNAME/interview-GPT.git
    git branch -M main
    git push -u origin main
    ```
@@ -90,11 +90,11 @@ Before deploying, make sure you have:
 2. **Create New Web Service**
    - Click "New +" in the top right
    - Select "Web Service"
-   - Connect your `vacation-interview-bot` repository
+   - Connect your `interview-GPT` repository
    - If you don't see it, click "Configure account" to grant access
 
 3. **Configure Service Settings**
-   - **Name**: `vacation-interview-bot` (or your preferred name)
+   - **Name**: `interview-GPT` (or your preferred name)
    - **Region**: Choose closest to your Couchbase cluster region
    - **Branch**: `main`
    - **Root Directory**: Leave empty
@@ -111,7 +111,7 @@ Before deploying, make sure you have:
    COUCHBASE_CONNECTION_STRING=couchbases://cb.xxxxx.cloud.couchbase.com
    COUCHBASE_USERNAME=your_username_here
    COUCHBASE_PASSWORD=your_password_here
-   COUCHBASE_BUCKET=vacation-interview-bot
+   COUCHBASE_BUCKET=interview-GPT
    NODE_ENV=production
    ```
 
@@ -125,7 +125,7 @@ Before deploying, make sure you have:
 
 6. **Verify Deployment**
    - Once deployed, you'll see "Live" status
-   - Click on the URL (e.g., `https://vacation-interview-bot.onrender.com`)
+   - Click on the URL (e.g., `https://interview-GPT.onrender.com`)
    - You should see the home page
 
 ### Step 4: Configure OpenAI API (5 minutes)
@@ -206,7 +206,7 @@ Before deploying, make sure you have:
   1. Verify connection string is correct (starts with `couchbases://`)
   2. Verify username and password are correct
   3. Check that database access credentials have "All Buckets" permission
-  4. Verify bucket name is exactly `vacation-interview-bot`
+  4. Verify bucket name is exactly `interview-GPT`
   5. Check Couchbase cluster is running (not paused)
 
 ### OpenAI API Errors

@@ -29,7 +29,7 @@ Couchbase is a NoSQL database that will store all your interview data (interview
 3. **Create Bucket** (This is where data is stored)
    - Once cluster is ready, go to "Data Tools" → "Buckets"
    - Click "Create Bucket"
-   - Bucket name: `vacation-interview-bot` (keep this exact name)
+   - Bucket name: `interview-GPT` (keep this exact name)
    - Leave all other settings as default
    - Click "Create"
 
@@ -60,7 +60,7 @@ Copy these 4 values and save them in a text file:
 Connection String: couchbases://cb.xxxxx.cloud.couchbase.com
 Username: querymind_admin
 Password: [your generated password]
-Bucket Name: vacation-interview-bot
+Bucket Name: interview-GPT
 ```
 
 ---
@@ -161,7 +161,7 @@ Render.com hosts your application and makes it accessible on the internet.
    Value: [paste your password from Step 1]
 
    Key: COUCHBASE_BUCKET
-   Value: vacation-interview-bot
+   Value: interview-GPT
 
    Key: NODE_ENV
    Value: production

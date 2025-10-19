@@ -74,7 +74,7 @@ Add these to your Render.com environment variables:
 COUCHBASE_CONNECTION_STRING=couchbases://cb.xxxxx.cloud.couchbase.com
 COUCHBASE_USERNAME=your_username
 COUCHBASE_PASSWORD=your_password
-COUCHBASE_BUCKET=vacation-interview-bot
+COUCHBASE_BUCKET=interview-GPT
 NODE_ENV=production
 ```
 

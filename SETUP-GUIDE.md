@@ -39,7 +39,7 @@ Before you begin, make sure you have accounts for:
 
 1. Once the cluster is ready, go to **"Data Tools"** → **"Buckets"**
 2. Click **"Create Bucket"**
-3. Enter bucket name: `vacation-interview-bot`
+3. Enter bucket name: `interview-GPT`
 4. Leave other settings as default
 5. Click **"Create"**
 
@@ -64,7 +64,7 @@ Before you begin, make sure you have accounts for:
 - Connection string (e.g., `couchbases://cb.xxxxx.cloud.couchbase.com`)
 - Username (e.g., `querymind_admin`)
 - Password (the one you generated)
-- Bucket name: `vacation-interview-bot`
+- Bucket name: `interview-GPT`
 
 ---
 
@@ -114,7 +114,7 @@ Before you begin, make sure you have accounts for:
 You'll receive the code from me. Once you have it:
 
 ```bash
-cd /path/to/vacation-interview-bot
+cd /path/to/interview-GPT
 
 # Initialize git if not already done
 git init
@@ -182,7 +182,7 @@ Click **"Advanced"** and add these environment variables:
 COUCHBASE_CONNECTION_STRING=couchbases://cb.xxxxx.cloud.couchbase.com
 COUCHBASE_USERNAME=querymind_admin
 COUCHBASE_PASSWORD=your_password_here
-COUCHBASE_BUCKET=vacation-interview-bot
+COUCHBASE_BUCKET=interview-GPT
 NODE_ENV=production
 ```
 
