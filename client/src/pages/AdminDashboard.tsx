@@ -100,18 +100,8 @@ export default function AdminDashboard() {
       <div className="container mx-auto p-6 space-y-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary">
-                <Brain className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">QueryMind Dashboard</h1>
-                <p className="text-muted-foreground">
-                  Create and manage AI-powered interviews
-                </p>
-              </div>
-            </div>
+          <div>
+            <img src="/logo.png" alt="QueryMind" className="h-20 w-auto" />
           </div>
           <div className="flex gap-2">
             <Button

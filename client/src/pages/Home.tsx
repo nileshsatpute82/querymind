@@ -12,18 +12,8 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
         <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary">
-              <Brain className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                QueryMind
-              </h1>
-              <p className="text-[10px] text-muted-foreground -mt-1">
-                AI-powered interviews
-              </p>
-            </div>
+          <div>
+            <img src="/logo.png" alt="QueryMind" className="h-12 w-auto" />
           </div>
           <div className="flex items-center gap-3">
             <Button 
@@ -224,15 +214,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-card/50 backdrop-blur">
         <div className="container py-8 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary">
-              <Brain className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-bold">QueryMind</span>
+          <div className="flex justify-center mb-4">
+            <img src="/logo.png" alt="QueryMind" className="h-16 w-auto" />
           </div>
-          <p className="text-sm text-muted-foreground">
-            AI that thinks and asks the right questions
-          </p>
           <p className="text-xs text-muted-foreground mt-4">
             Powered by OpenAI GPT • Built with React & Couchbase
           </p>
