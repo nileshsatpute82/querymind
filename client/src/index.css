@@ -171,3 +171,23 @@
     }
   }
 }
+
+/* Force dialog content to be fully opaque */
+[data-slot="dialog-content"] {
+  background-color: hsl(var(--card)) !important;
+  opacity: 1 !important;
+}
+
+/* Ensure dialog text is fully visible */
+[data-slot="dialog-content"] * {
+  color: hsl(var(--card-foreground));
+}
+
+[data-slot="dialog-title"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+[data-slot="dialog-description"] {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
