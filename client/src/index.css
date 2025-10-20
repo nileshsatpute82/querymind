@@ -172,22 +172,29 @@
   }
 }
 
-/* Force dialog content to be fully opaque */
+/* Force dialog content to be fully opaque with white background */
 [data-slot="dialog-content"] {
-  background-color: hsl(var(--card)) !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
   opacity: 1 !important;
 }
 
-/* Ensure dialog text is fully visible */
-[data-slot="dialog-content"] * {
-  color: hsl(var(--card-foreground));
-}
-
+/* Ensure dialog text is dark and visible */
 [data-slot="dialog-title"] {
-  color: hsl(var(--foreground)) !important;
+  color: #1a1a1a !important;
 }
 
 [data-slot="dialog-description"] {
-  color: hsl(var(--muted-foreground)) !important;
+  color: #666666 !important;
+}
+
+/* Make sure labels and inputs are visible */
+label {
+  color: #1a1a1a !important;
+}
+
+/* Dialog overlay should be very dark */
+[data-slot="dialog-overlay"] {
+  background-color: rgba(0, 0, 0, 0.85) !important;
 }
 
