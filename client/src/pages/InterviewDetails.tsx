@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRoute, useLocation } from 'wouter';
 import { trpc } from '@/lib/trpc';
-import DashboardLayout from '@/components/DashboardLayout';
+// DashboardLayout removed - no sidebar needed
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -49,13 +49,13 @@ export default function InterviewDetails() {
 
   if (!interviewData) {
     return (
-      <DashboardLayout>
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto p-6">
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
@@ -84,7 +84,7 @@ export default function InterviewDetails() {
   };
 
   return (
-    <DashboardLayout>
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -314,7 +314,7 @@ export default function InterviewDetails() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }
 

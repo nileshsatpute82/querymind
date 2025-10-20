@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { trpc } from '@/lib/trpc';
-import DashboardLayout from '@/components/DashboardLayout';
+// DashboardLayout removed - no sidebar needed
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
   const showCouchbaseError = config && 'error' in config && !!config.error;
 
   return (
-    <DashboardLayout>
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -374,7 +374,7 @@ export default function AdminDashboard() {
           </DialogContent>
         </Dialog>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }
 
